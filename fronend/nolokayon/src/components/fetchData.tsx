@@ -1,7 +1,17 @@
-const fetchData = async (url:string) => {
+const fetchData = async (url:string, method:string = "GET", json:any=null) => {
     try {
-        const response = await fetch(url, { method: "GET" });
+        const options: RequestInit = { 
+            method,
+            headers: {
+                "Content-Type": "application/json", // Default header for JSON requests
+            }
+        };
 
+        if (json && ["POST", "PUT", "PATCH"].includes(method.toUpperCase())) {
+            options.body = JSON.stringify(json);
+        }
+        
+        const response = await fetch(url, options);
         let result = await response.json();
 
         if (!response.ok) {

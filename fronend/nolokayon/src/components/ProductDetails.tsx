@@ -21,7 +21,7 @@ const ProductDetails = () => {
     const url = apiUrl + "/product-details/"+productId
     const fetchDataAsync = async () => {
         let result = await fetchData(url);
-        
+
         if (result.status === 200) {
             if (result.product) setProduct(result.product);
         } else {
@@ -124,11 +124,11 @@ const ProductDetails = () => {
                                     <ul>
                                         <li className={quantity > 1 ? "":"disabled"} onClick={() => quantity > 1? setQuantity(quantity-1):null}>-</li>
                                         <li>{quantity}</li>
-                                        <li className={quantity <5 ? "":"disabled"} onClick={() => quantity <5 ? setQuantity(quantity+1):null}>+</li>
+                                        <li className={quantity < 5 && quantity < product.stock_quantity ? "":"disabled"} onClick={() => quantity < 5 && quantity < product.stock_quantity ? setQuantity(quantity+1):null}>+</li>
                                     </ul>
                                 </div>
                                 <div className="product_variant quantity">
-                                    <NavLink to={`/checkout/${productId}?name=${product.name}&catagory=${product.category.name}?quantity=${quantity}`} className="button">Buy Now</NavLink>
+                                    <NavLink to={`/checkout/${productId}?name=${product.name}&catagory=${product.category.name}&quantity=${quantity}`} className="button">Buy Now</NavLink>
                                 </div>
                                 <div className=" product_d_action">
                                 <ul>

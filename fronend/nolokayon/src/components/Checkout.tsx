@@ -1,19 +1,96 @@
-import React, { useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Header from './header/Header';
 import Footer from './footer/Footer';
 import { CartContext } from '../context/CartContext';
+import fetchData from './fetchData';
+import apiUrl from './APIURL';
+import Loading from './Loading';
+import ErrorPage from './ErrorPage';
 
 const Checkout = () => {
     const { addToCart } = useContext(CartContext);
+    const param = useParams();
+    const productId = param.id;
 
-    const product = {
-        id: 1,
-        name: "Golden Ring",
-        image: "/assets/img/s-product/product.jpg",
-        quantity: 1,
-        price: 223
-    }
+    const location = useLocation();
+    const getQueryParams = (query:any) => {
+      return Object.fromEntries(new URLSearchParams(query));
+    };
+    const queryParams = getQueryParams(location.search);
+
+    const [quantity, setQuantity] = useState<number>(1);
+    const [product, setProduct] = useState({})
+    const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [deliveryCost , setDeliveryCost] = useState<number>(0);
+    const [productPrice, setProductPrice] = useState<number>(0);
+    const [error, setError] = useState<any>(null)
+    const [loading, setLoading] = useState<boolean>(true);
+    const [couponWarning, setCouponWarning] = useState<any>(null)
+    const [isCouponValid, setIsCouponValid] = useState<boolean>(false)
+
+    const couponCode = useRef();
+    const url = apiUrl + "/product-details/"+productId
+    const couponUrl = apiUrl + "/discount-coupon"
+
+    const fetchCouponDetails = async (code:any) => {
+        const jsonData = {
+            "product_id": productId,
+            "coupon": code,
+        }
+        let result = await fetchData(couponUrl,"POST",jsonData);
+
+        if(result.status == 200){
+            setIsCouponValid(true);
+            setCouponWarning(result.message);
+
+            const off_price = result.off_price;
+            setTotalPrice(((off_price*quantity)+deliveryCost));
+        }else{
+            setTotalPrice(((productPrice*quantity)+deliveryCost))
+            setIsCouponValid(false);
+            setCouponWarning(result.error);
+        }
+    };
+
+    const fetchDataAsync = async () => {
+        let result = await fetchData(url);
+        
+        if (result.status === 200) {
+            if (result.product) {
+                setProduct(result.product)
+                if (result.product.discount_price) setProductPrice(result.product.discount_price);
+                else setProductPrice(result.product.price);
+                setDeliveryCost(result.product.delivery_cost);
+            };
+        } else {
+            setError(result.error);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchDataAsync();
+        if (queryParams.quantity) setQuantity(parseInt(queryParams.quantity));
+    },[]);
+
+    useEffect(() => {
+        setTotalPrice(((productPrice*quantity)+deliveryCost))
+        setCouponWarning(null);
+        setIsCouponValid(false);
+        
+    },[product,deliveryCost,quantity,productPrice]);
+
+    const handleCoupon = () => {
+        const code = couponCode.current?.value;
+        if (code){
+            const result = fetchCouponDetails(code);
+        }else{
+            setTotalPrice(((productPrice*quantity)+deliveryCost))
+            setCouponWarning("Invalid coupon code.");
+            setIsCouponValid(false);
+        }
+    };
 
     const navigate = useNavigate()
     const handleCheckout = (event:any) => {
@@ -21,6 +98,9 @@ const Checkout = () => {
         addToCart(product);
         navigate("/order-details/1")
     };
+
+    if (loading) return <Loading/>
+    if (error) return <ErrorPage error={error} />;
 
     return (
         <>
@@ -33,7 +113,7 @@ const Checkout = () => {
                             <div className="breadcrumb_content">
                                 <h3>Checkout</h3>
                                 <ul>
-                                    <li><NavLink to="/">home</NavLink></li>
+                                    <li><NavLink to="/">Home</NavLink></li>
                                     <li>&gt;</li>
                                     <li>Checkout</li>
                                 </ul>
@@ -110,20 +190,39 @@ const Checkout = () => {
                                     <div className="coupon_code right">
                                         <h3>Checkou Details</h3>
                                         <div className="coupon_inner">
-                                        <div className="cart_subtotal">
-                                            <p>Subtotal</p>
-                                            <p className="cart_amount">£215.00</p>
-                                        </div>
-                                        <div className="cart_subtotal ">
-                                            <p>Shipping</p>
-                                            <p className="cart_amount"><span>Flat Rate:</span> £255.00</p>
-                                        </div>
-                                        <a href="#">Calculate shipping</a>
+                                            <div className="cart_subtotal">
+                                                <span>{product.name}</span>
+                                                <p className="cart_amount">{productPrice} Tk</p>
+                                            </div>
 
-                                        <div className="cart_subtotal">
-                                            <p>Total</p>
-                                            <p className="cart_amount">£215.00</p>
-                                        </div>
+                                            <div className="cart_subtotal">
+                                                <p>Quantity: </p>
+
+                                                <p className="cart_amount">
+                                                    <button 
+                                                    style={{marginRight:"15px"}}
+                                                    
+                                                    disabled={quantity > 1 ? false:true}
+                                                    onClick={() => setQuantity(quantity-1)}>-</button>
+                                                    {quantity}
+                                                    
+                                                    <button style={{marginLeft:"15px"}} 
+                                                    disabled={quantity < 5 && quantity < product.stock_quantity  ? false:true}
+                                                    onClick={() => setQuantity(quantity+1)}>+</button>
+                                                    </p>
+                                            </div>
+                                            <div className="cart_subtotal ">
+                                                <p>Delivery</p>
+                                                <p className="cart_amount">
+                                                    {deliveryCost <= 0 ?  <span style={{color:"#c09578"}}>No Charge</span>:`${deliveryCost} Tk`}
+                                                </p>
+                                            </div>
+                                            <a href="#">Calculate Total</a>
+
+                                            <div className="cart_subtotal">
+                                                <p>Total</p>
+                                                <p className="cart_amount">{totalPrice.toFixed(2)}</p>
+                                            </div>
                                         
                                         </div>
                                         
@@ -132,9 +231,10 @@ const Checkout = () => {
                                             <div id="checkout_coupon" className="collapse show" data-parent="#accordion">
                                                 <div className="checkout_info">
                                                     
-                                                        <input placeholder="Coupon code" type="text"/>
-                                                        <button type="button">Apply coupon</button>
+                                                        <input ref={couponCode} placeholder="Coupon code" type="text"/>
+                                                        <button type="button" onClick={handleCoupon}>Apply coupon</button>
                                                     
+                                                    { couponWarning ? <div><b style={{color: isCouponValid ? "green":"red"}}>{couponWarning}</b></div>:null}
                                                 </div>
                                             </div>    
                                         </div>

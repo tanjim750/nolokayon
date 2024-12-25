@@ -26,4 +26,5 @@ urlpatterns = [
     path('contact', views.ContactView.as_view()),
     path('about',views.AboutView.as_view()),
     path('footer', views.FooterView.as_view()),
+    path('discount-coupon', views.DiscountView.as_view()),
 ]

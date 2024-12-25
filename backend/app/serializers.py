@@ -34,6 +34,11 @@ class CategorySerializer(ModelSerializer):
         model = models.Category
         fields = ['id', 'name']  # Include all the fields you need
 
+class CouponSerializer(ModelSerializer):
+    class Meta:
+        model = models.Coupon
+        fields = "__all__" 
+
 # Serializer for ProductOtherDetails
 class ProductOtherDetailsSerializer(ModelSerializer):
     class Meta:

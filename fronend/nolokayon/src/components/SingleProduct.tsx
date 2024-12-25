@@ -69,7 +69,7 @@ const SingleProduct = ({props=null}:{props?:any}) => {
                         <div className="action_links">
                             <ul>
                                 <li><a><span className="icon icon-Heart"></span></a></li>
-                                <li className="add_to_cart"><NavLink to={`/checkout/${product.id}?name=${product.name}&catagory=${product.category.name}?quantity=1`} title="Buy now">Buy Now</NavLink></li>
+                                <li className="add_to_cart"><NavLink to={`/checkout/${product.id}?name=${product.name}&catagory=${product.category.name}&quantity=1`} title="Buy now">Buy Now</NavLink></li>
                                 <li><a><i className="ion-ios-settings-strong"></i></a></li>
                             </ul>
                         </div>
