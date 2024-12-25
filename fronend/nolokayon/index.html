@@ -7,6 +7,8 @@
     <title>Nolokayon</title>
     <!-- CSS 
     ========================= -->
+    <!-- loading CSS -->
+    <link rel="stylesheet" href="/assets/css/loading.css">
 
     <!-- Plugins CSS -->
     <link rel="stylesheet" href="/assets/css/plugins.css">
@@ -46,19 +48,5 @@
 
   <!-- Main JS -->
   <script src="/assets/js/main.js"></script>
-
-  <script>
-    // Function to set background images from data-bgimg attribute
-    const dataBackgroundImage = () => {
-      const elements = document.querySelectorAll<HTMLElement>('[data-bgimg]');
-      elements.forEach((element) => {
-        const bgImgUrl = element.getAttribute('data-bgimg');
-        if (bgImgUrl) {
-          element.style.backgroundImage = `url(${bgImgUrl})`;
-        }
-      });
-    };
-    dataBackgroundImage();
-  </script>
   </body>
 </html>

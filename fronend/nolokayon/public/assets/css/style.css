@@ -7317,11 +7317,72 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
   width: 100%;
 }
 
+.quantity ul li {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background: #f1f1f1;
+  color: #5a5a5a;
+  border-radius: 3px;
+  margin-left: 3px;
+  cursor: pointer;
+}
+
+.quantity ul li:hover {
+  background: #c09578;
+  color: #ffffff;
+}
+
+.quantity ul li.current {
+  background: #c09578;
+  color: #ffffff;
+}
+
+.quantity ul li.disabled {
+  color: gray;
+  cursor: not-allowed;
+}
+
 @media only screen and (max-width: 767px) {
   .pagination {
     margin-top: 19px;
   }
 }
+.pagination ul button {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background: #f1f1f1;
+  color: #5a5a5a;
+  border-radius: 3px;
+  margin-left: 3px;
+  border: none;
+  outline: none;
+}
+
+.pagination ul button:hover {
+  background: #c09578;
+  color: #ffffff;
+}
+
+.pagination ul button.current {
+  background: #c09578;
+  color: #ffffff;
+}
+
+.pagination ul button:disabled {
+  color: gray;
+  cursor: not-allowed;
+}
+
+.pagination ul button.next {
+  width: 40px;
+}
+
 .pagination ul li {
   display: inline-block;
   width: 30px;
@@ -7333,6 +7394,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
   border-radius: 3px;
   margin-left: 3px;
 }
+
 .pagination ul li:first-child {
   margin-left: 0;
 }
@@ -11868,3 +11930,49 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 
 /*# sourceMappingURL=style.css.map */
+.order-body{
+  height: 100%;
+  width: 100%;
+  background-color: #eeeeee;
+  padding: 20px 20% 20px 20%;
+  padding-bottom: 20px;
+}
+
+.order-details{
+  background-color: white;
+  padding-bottom: 20px;
+}
+
+.bgcolor-light{
+  background-color: #eeeeee;
+  margin: 0px 20px 20px 20px;
+  padding: 10px 0 20px 0;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 576px) {
+  .order-body{
+    padding: 20px 5% 20px 5%;
+  }
+}
+
+/* Medium devices (e.g., tablets) */
+@media screen and (min-width: 577px) and (max-width: 768px) {
+  .order-body{
+    padding: 20px 10% 20px 10%;
+  }
+}
+
+/* Large devices (e.g., desktops) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .order-body{
+    padding: 20px 15% 20px 15%;
+  }
+}
+
+/* Extra large devices (e.g., large desktops) */
+@media screen and (min-width: 1025px) {
+  .order-body{
+    padding: 20px 20% 20px 20%;
+  }
+}

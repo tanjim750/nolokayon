@@ -2,17 +2,51 @@ import { NavLink } from 'react-router-dom';
 
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
+import { useEffect, useState } from 'react';
+import Loading from '../Loading';
+import ErrorPage from '../ErrorPage';
+import fetchData from '../fetchData';
+import apiUrl from '../APIURL';
+
 
 const About = () => {
+    const [header, setHeader] = useState<any>(null);
+    const [about, setAbout] = useState<any>(null);
+
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const url = apiUrl+"about";
+    const fetchDataAsync = async () => {
+        let result = await fetchData(url);
+        
+        if (result.status === 200) {
+            if (result.header) setHeader(result.header);
+            if (result.about) setAbout(result.about);
+        } else {
+            setError(result.error);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchDataAsync();
+    }, []);
+
+    
+    if (loading) return <Loading/>
+    if (error) return <ErrorPage error={error} />
+
     return (
         <>
             <Header/>
+
             <div className="breadcrumbs_area">
                 <div className="container">   
                     <div className="row">
                         <div className="col-12">
                             <div className="breadcrumb_content">
-                                <h3>about us</h3>
+                                <h3>{about.heading}</h3>
                                 <ul>
                                     <li>
                                         <NavLink to="/" > Home </NavLink>
@@ -30,13 +64,13 @@ const About = () => {
                     <div className="row align-items-center">
                         <div className="col-12">
                             <div className="about_thumb">
-                                <img src="../assets/img/about/about1.jpg" alt=""/>
+                                <img src={about.image} alt=""/>
                             </div>
 
                             <div className="about_content">
-                                <h1>Welcome to Nolokayon!</h1>
-                                <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam, est usus legentis in iis qui facit eorum claritatem. </p>
-                                <span>“There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.”</span>
+                                <h1>{about.title}</h1>
+                                <p>{about.description}</p>
+                                <span>“{about.message}”</span>
                             </div>
                         </div>    
                     </div>

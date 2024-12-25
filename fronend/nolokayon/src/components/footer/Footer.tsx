@@ -1,44 +1,143 @@
+import { useEffect, useState } from "react";
+import apiUrl from "../APIURL";
+import fetchData from "../fetchData";
+import { NavLink } from "react-router-dom";
 
 const Footer = () => {
+    const defaultFooter = {
+        address: "Tejgaon, Dhaka, Bangladesh",
+        number: ["01631596698"],
+        email: ["supports@nolokayon.shop"]
+    }
+    
+    const [footer, setFooter] = useState<any>(defaultFooter);
+    const [products, setProduct] = useState<any[]>([]);
+    const [latestProducts, setLatestProduct] = useState<any[]>([]);
+    const [popularProducts, setPopularProduct] = useState<any[]>([]);
+
+    const url = apiUrl + "footer";
+    useEffect(() => {
+        const fetchDataAsync = async () => {
+            let result = await fetchData(url);
+            
+            if (result.status === 200) {
+                if (result.footer) setFooter(result.footer);
+                if (result.products) setProduct(result.products);
+            }
+        };
+    
+        // Call the async function
+        fetchDataAsync();
+    },[]);
+
+    // sort products
+    useEffect(() => {
+        let sortLatest = [...products];
+        let sortPopular = [...products];
+
+        sortLatest.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        sortPopular.sort((a,b) => b.hits - a.hits);
+
+        setLatestProduct(sortLatest);
+        setPopularProduct(sortPopular);
+    },[products]);
+
+
     return (
         <>
             <footer className="footer_widgets">
+                <hr />
                 <div className="container">  
                     <div className="footer_top">
                         <div className="row">
-                                <div className="col-6">
-                                    <div className="widgets_container contact_us">
-                                        <h3>About Nolokayon</h3>
-                                        <div className="footer_contact">
-                                            <p>Address: Your address goes here.</p>
-                                            <p>Phone: <a href="tel:0123456789">0123456789</a></p>
-                                            <p>Email: demo@example.com</p>
-                                            <ul>
-                                                <li><a href="index.html#"><i className="fa fa-facebook"></i></a></li>
-                                                <li><a href="index.html#"><i className="fa fa-twitter"></i></a></li>
-                                                <li><a href="index.html#"><i className="ion-social-rss"></i></a></li>
-                                                <li><a href="index.html#"><i className="ion-social-googleplus"></i></a></li>
+                            <div className="col-lg-3 col-md-3 col-6">
+                                <div className="widgets_container contact_us">
+                                    <h3>About Nolokayon</h3>
+                                    <div className="footer_contact">
+                                        <p>Address: {footer.address}</p>
+                                        {footer.number.map((num:any) => (
+                                            <p>Phone: <a href={`tel:${num}`}>{num}</a></p>
+                                        ))}
+                                        {footer.email.map((mail:any) => (
+                                            <p>Email: {mail}</p>
+                                        ))}
+                                        <ul>
+                                            {footer.facebook ? <li><a href={footer.facebook}><i className="fa fa-facebook"></i></a></li>:null}
+                                            {footer.instagram ? <li><a href={footer.instagram}><i className="fa fa-instagram"></i></a></li>:null}
+                                            
+                                        </ul>
 
-                                                <li><a href="index.html#"><i className="ion-social-youtube"></i></a></li>
-                                            </ul>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-6">
-                                    <div className="widgets_container widget_menu">
-                                        <h3>Information</h3>
-                                        <div className="footer_menu">
-                                            <ul>
-                                                <li><a href="index.html#">Home</a></li>
-                                                <li><a href="portfolio.html">Shop</a></li>
-                                                <li><a href="about.html">About Us</a></li>
-                                                <li><a href="contact.html">Contact</a></li>
-                                            </ul>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div className="col-lg-3 col-md-3 col-6">
+                                <div className="widgets_container widget_menu">
+                                    <h3>Pages</h3>
+                                    <div className="footer_menu">
+                                        <ul>
+                                            <li><NavLink to="/">Home</NavLink></li>
+                                            <li><NavLink to="/shop">Shop</NavLink></li>
+                                            <li><NavLink to="/about">About Us</NavLink></li>
+                                            <li><NavLink to="/contact">Contact</NavLink></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-lg-3 col-md-3 col-6">
+                                <div className="widgets_container product_widget">
+                                    <h3>Latest Products</h3>
+                                    <div className="simple_product">
+                                        {latestProducts.slice(0,2).map((product) => 
+                                            <div className="simple_product_items">
+                                                <div className="simple_product_thumb">
+                                                    <a href={product.id}><img src={product.image} alt=""/></a>
+                                                </div>
+                                                <div className="simple_product_content">
+                                                    <div className="tag_cate">
+                                                        <a href={product.id}>{product.category.name}</a>
+                                                    </div>
+                                                    <div className="product_name">
+                                                        <h3><a href={product.id}>{product.name}</a></h3>
+                                                    </div>
+                                                    <div className="product_price">
+                                                        {product.discount_price ? <span className="current_price">{product.discount_price}</span>:null}
+                                                        <span className={product.discount_price ? "old_price":"current_price"}>$70.00</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-lg-3 col-md-3 col-6">
+                                <div className="widgets_container product_widget">
+                                    <h3>Top Rated Products</h3>
+                                    <div className="simple_product">
+                                    {popularProducts.slice(0,2).map((product) => 
+                                            <div className="simple_product_items">
+                                                <div className="simple_product_thumb">
+                                                    <a href={product.id}><img src={product.image} alt=""/></a>
+                                                </div>
+                                                <div className="simple_product_content">
+                                                    <div className="tag_cate">
+                                                        <a href={product.id}>{product.category.name}</a>
+                                                    </div>
+                                                    <div className="product_name">
+                                                        <h3><a href={product.id}>{product.name}</a></h3>
+                                                    </div>
+                                                    <div className="product_price">
+                                                        {product.discount_price ? <span className="current_price">{product.discount_price}</span>:null}
+                                                        <span className={product.discount_price ? "old_price":"current_price"}>$70.00</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className="footer_bottom">
                     <div className="row">

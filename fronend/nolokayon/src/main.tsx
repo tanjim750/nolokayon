@@ -6,6 +6,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './components/home/Home'
 import About from './components/about/About'
 import Contact from './components/contact/Contact'
+import Shop from './components/shop/Shop'
+import Login from './components/Login'
+import ProductDetails from './components/ProductDetails'
+import Checkout from './components/Checkout'
+import { CartProvider } from './context/CartContext'
+import PageNotFound from './components/PageNotFound'
+import OrderDetails from './components/OrderDetails'
 
 
 const router = createBrowserRouter([
@@ -20,11 +27,37 @@ const router = createBrowserRouter([
   {
     path: '/contact',
     element: <Contact/>
+  },
+  {
+    path: '/shop',
+    element: <Shop/>
+  },
+  {
+    path: '/nolok-login',
+    element: <Login/>
+  },
+  {
+    path: '/product-details/:id',
+    element: <ProductDetails/>
+  },
+  {
+    path: '/checkout/:id',
+    element: <Checkout/>
+  },
+  {
+    path: '/order-details/:id',
+    element: <OrderDetails/>
+  },
+  {
+    path: '*',
+    element: <PageNotFound/>
   }
 ])
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router}/>
+    <CartProvider>
+      <RouterProvider router={router}/>
+    </CartProvider>
   </StrictMode>,
 )
