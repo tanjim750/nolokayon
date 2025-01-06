@@ -10,7 +10,6 @@ import apiUrl from '../APIURL';
 
 
 const About = () => {
-    const [header, setHeader] = useState<any>(null);
     const [about, setAbout] = useState<any>(null);
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -21,7 +20,6 @@ const About = () => {
         let result = await fetchData(url);
         
         if (result.status === 200) {
-            if (result.header) setHeader(result.header);
             if (result.about) setAbout(result.about);
         } else {
             setError(result.error);

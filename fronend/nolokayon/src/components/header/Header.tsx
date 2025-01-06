@@ -6,7 +6,7 @@ import Loader from './Loader';
 import { CartContext } from '../../context/CartContext';
 
 const Header = () => {
-    const {cartItems } = useContext(CartContext)
+    const {cartItems }:any = useContext(CartContext)
     const [checkoutSidebar, setCheckoutSidebar] = useState<boolean>(false);
     const [mobileMenu, setMobileMenu] = useState<boolean>(false);
 
@@ -178,19 +178,17 @@ const Header = () => {
                                             </div>
                                         </div>
                                         {cartItems.length == 0 ? <h5> No Items Found </h5>:""}
-                                        { cartItems.map((item) =>
+                                        { cartItems.map((item:any) =>
                                             <div className="cart_item">
                                                 <div className="cart_img">
-                                                    <a><img src={item.image} alt=""/></a>
+                                                    <NavLink to={`/order-details/${item.checkout.order_id}`}><img src={item.product.image} alt=""/></NavLink>
                                                 </div>
                                                 <div className="cart_info">
-                                                    <a href="#">{item.name}</a>
+                                                    <NavLink to={`/order-details/${item.checkout.order_id}`}>{item.product.name}</NavLink>
 
                                                     <span className="quantity">Qty: {item.quantity}</span>
                                                     <span className="price_cart">{item.price}</span>
-                                                </div>
-                                                <div className="cart_remove">
-                                                    <a href="#"><i className="ion-android-close"></i></a>
+                                                    <b className={item.checkout.delivery_status == 'cancelled' ? 'text_red':'text_green'}>{item.checkout.delivery_status}</b>
                                                 </div>
                                             </div>
                                         )}

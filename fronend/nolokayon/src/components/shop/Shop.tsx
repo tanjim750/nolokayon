@@ -6,24 +6,21 @@ import { useEffect, useState } from "react";
 import Loading from "../Loading";
 import ErrorPage from "../ErrorPage";
 import fetchData from "../fetchData";
+import apiUrl from "../APIURL";
 
 const Shop = () => {
-
-    const [header, setHeader] = useState<any>(null);
     const [products, setProduct] = useState<any[]>([]);
     // const [footer, setFooter] = useState<any>(null);
 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const url = "http://127.0.0.1:8000/home";
-
+    const url = apiUrl + "products";
     useEffect(() => { 
         const fetchDataAsync = async () => {
             let result = await fetchData(url);
             
             if (result.status === 200) {
-                if (result.header) setHeader(result.header);
                 if (result.products) setProduct(result.products);
             } else {
                 setError(result.error);

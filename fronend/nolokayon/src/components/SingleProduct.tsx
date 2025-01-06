@@ -38,17 +38,18 @@ const SingleProduct = ({props=null}:{props?:any}) => {
         <div className={column}>
             <div className="single_product">
                 <div className="product_thumb">
-                    <a className="primary_img" href="product-details.html"><img src={product.image} alt=""/></a>
-                    <a className="secondary_img" href="product-details.html"><img src={product.gallery[1]} alt=""/></a>
+                    <NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`}  className="primary_img" ><img src={product.image} alt=""/></NavLink>
+                    <NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`}  className="secondary_img"><img src={product.gallery[1]} alt=""/></NavLink>
+
                     <div className="quick_button">
                         <NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`} data-placement="top" data-original-title="Prduct details">View Details</NavLink>
                     </div>
                 </div>
                 <div className="product_content">
                     <div className="tag_cate">
-                        <a href="#">{product.category.name}</a>
+                        <NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`} >{product.category.name}</NavLink>
                     </div>
-                    <h3><a href="product-details.html">{product.name}</a></h3>
+                    <h3><NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`} >{product.name}</NavLink></h3>
                     <div className="price_box">
                         { product.discount_price ? <span className="old_price">{product.discount_price}</span>:""}
                         <span className="current_price">{product.price}</span>
@@ -56,11 +57,11 @@ const SingleProduct = ({props=null}:{props?:any}) => {
                     <div className="product_hover">
                         <div className="product_ratings">
                             <ul>
-                                <li><a href="#"><i className="ion-ios-star-outline"></i></a></li>
-                                <li><a href="#"><i className="ion-ios-star-outline"></i></a></li>
-                                <li><a href="#"><i className="ion-ios-star-outline"></i></a></li>
-                                <li><a href="#"><i className="ion-ios-star-outline"></i></a></li>
-                                <li><a href="#"><i className="ion-ios-star-outline"></i></a></li>
+                                <li><a><i className="ion-ios-star-outline"></i></a></li>
+                                <li><a><i className="ion-ios-star-outline"></i></a></li>
+                                <li><a><i className="ion-ios-star-outline"></i></a></li>
+                                <li><a><i className="ion-ios-star-outline"></i></a></li>
+                                <li><a><i className="ion-ios-star-outline"></i></a></li>
                             </ul>
                         </div>
                         <div className="product_desc">
@@ -69,7 +70,7 @@ const SingleProduct = ({props=null}:{props?:any}) => {
                         <div className="action_links">
                             <ul>
                                 <li><a><span className="icon icon-Heart"></span></a></li>
-                                <li className="add_to_cart"><NavLink to={`/checkout/${product.id}?name=${product.name}&catagory=${product.category.name}&quantity=1`} title="Buy now">Buy Now</NavLink></li>
+                                <li className="add_to_cart"><NavLink to={`/checkout/${product.id}?name=${product.name}&catagory=${product.category.name}`} title="Buy now">Buy Now</NavLink></li>
                                 <li><a><i className="ion-ios-settings-strong"></i></a></li>
                             </ul>
                         </div>

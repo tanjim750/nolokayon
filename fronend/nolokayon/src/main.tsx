@@ -13,6 +13,7 @@ import Checkout from './components/Checkout'
 import { CartProvider } from './context/CartContext'
 import PageNotFound from './components/PageNotFound'
 import OrderDetails from './components/OrderDetails'
+import { UserInfoProvider } from './context/UserInfo'
 
 
 const router = createBrowserRouter([
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
     element: <Checkout/>
   },
   {
-    path: '/order-details/:id',
+    path: '/order-details/:orderId',
     element: <OrderDetails/>
   },
   {
@@ -56,8 +57,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <CartProvider>
-      <RouterProvider router={router}/>
-    </CartProvider>
+    <UserInfoProvider>
+      <CartProvider>
+        <RouterProvider router={router}/>
+      </CartProvider>
+    </UserInfoProvider>
   </StrictMode>,
 )

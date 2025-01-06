@@ -11950,6 +11950,22 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
   border-radius: 5px;
 }
 
+.product_category .active{
+  background-color: whitesmoke;
+} 
+
+.error {
+  color: red;
+}
+
+.text_green {
+  color: green;
+}
+
+.text_red {
+  color: red;
+}
+
 @media screen and (max-width: 576px) {
   .order-body{
     padding: 20px 5% 20px 5%;

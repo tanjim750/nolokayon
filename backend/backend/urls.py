@@ -17,14 +17,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 from app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home', views.Home.as_view(), name='home'),
     path('product-details/<id>', views.ProductDetails.as_view()),
+    path('products', views.ProductView.as_view()),
     path('contact', views.ContactView.as_view()),
     path('about',views.AboutView.as_view()),
     path('footer', views.FooterView.as_view()),
     path('discount-coupon', views.DiscountView.as_view()),
-]
+    path('visitor/<visitor_id>', views.VisitorView.as_view()),
+    path('checkout', views.CheckoutView.as_view()),
+    path('order-details/<order_id>', views.OrderDetailsView.as_view()),
+] + static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

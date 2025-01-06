@@ -53,5 +53,24 @@ class ProductSerializer(ModelSerializer):
     class Meta:
         model = models.Product
         fields = "__all__" 
+
+class VisitorSerializer(ModelSerializer):
+    class Meta:
+        model = models.Visitor
+        fields = "__all__" 
+
+class CheckoutSerializer(ModelSerializer):
+    visitor = VisitorSerializer()
+    product = ProductSerializer()
     
+    class Meta:
+        model = models.Checkout
+        fields = "__all__" 
+
+class CheckoutItemSerializer(ModelSerializer):
+    checkout = CheckoutSerializer()
+    product = ProductSerializer()
     
+    class Meta:
+        model = models.CheckoutItem
+        fields = "__all__" 

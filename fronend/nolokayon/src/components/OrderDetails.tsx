@@ -1,9 +1,39 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import Header from './header/Header';
-import { NavLink } from 'react-router-dom';
+import {useParams } from 'react-router-dom';
 import Footer from './footer/Footer';
+import apiUrl from './APIURL';
+import fetchData from './fetchData';
+import Loading from './Loading';
+import ErrorPage from './ErrorPage';
 
 const OrderDetails = () => {
+    const { orderId } = useParams();
+
+    const [OrderDetails, setOrderDetails] = useState<any>({})
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<any>(null);
+
+    const url = apiUrl + 'order-details/'+orderId
+    const fetchDetails = async() => {
+        const result = await fetchData(url);
+        if (result.status == 200){
+            setOrderDetails(result)
+            console.log(result);
+        }else (
+            setError(result.error)
+        )
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        fetchDetails();
+    },[orderId]);
+
+    
+    if (loading) return <Loading/>
+    if (error) return <ErrorPage error={error} />;
+
     return (
         <>
         <Header/>
@@ -30,37 +60,39 @@ const OrderDetails = () => {
                             <div className="row">
                                 <div className='col-12 col-lg-3 col-md-3'>
                                     <span>
-                                        ORDER NUMBER
+                                        ORDER NUMBER:
                                     </span>
                                     <div>
-                                        <b>26353</b>
+                                        <b>{OrderDetails.checkout.order_id}</b>
                                     </div>
                                     <hr />
                                 </div>
                                 <div className='col-12 col-lg-3 col-md-3'>
                                     <span>
-                                        ORDER NUMBER
+                                        ORDER DATE:
                                     </span>
                                     <div>
-                                        <b>26353</b>
+                                        <b>{OrderDetails.created_at}</b>
                                     </div>
                                     <hr />
                                 </div>
                                 <div className='col-12 col-lg-3 col-md-3'>
                                     <span>
-                                        ORDER NUMBER
+                                        TOTAL:
                                     </span>
                                     <div>
-                                        <b>26353</b>
+                                        <b>{OrderDetails.price}</b>
                                     </div>
                                     <hr />
                                 </div>
                                 <div className='col-12 col-lg-3 col-md-3'>
                                     <span>
-                                        ORDER NUMBER
+                                        DELIVERY STATUS:
                                     </span>
                                     <div>
-                                        <b>26353</b>
+                                        <b style={{color: OrderDetails.checkout.delivery_status.toLowerCase() == 'cancelled' ? "red":"green"}}>
+                                        {OrderDetails.checkout.delivery_status}
+                                        </b>
                                     </div>
                                     <hr />
                                 </div>
@@ -90,16 +122,31 @@ const OrderDetails = () => {
                                 </div>
                                 <div className='col-8'>
                                     <div>
-                                        <span>Product name</span>
+                                        <span>{OrderDetails.product.name}</span>
                                     </div>
                                     
                                 </div>
                                 <div className='col-4'>
                                     <div>
-                                        <span>29966 tk</span>
+                                        <span>{OrderDetails.product.price}</span>
                                     </div>
                                     
                                 </div>
+
+                                {OrderDetails.checkout.other_details && <>
+                                    <div className='col-8'>
+                                        <div>
+                                            <span>{OrderDetails.checkout.other_details.split(":")[0]}</span>
+                                        </div>
+                                        
+                                    </div>
+                                    <div className='col-4'>
+                                        <div>
+                                            <span>{OrderDetails.checkout.other_details.split(":")[1]}</span>
+                                        </div>
+                                        
+                                    </div>
+                                </>}
                                 <div className='col-8'>
                                     <div>
                                         <span>Quantity: </span>
@@ -108,29 +155,34 @@ const OrderDetails = () => {
                                 </div>
                                 <div className='col-4'>
                                     <div>
-                                        <span>3</span>
+                                        <span>{OrderDetails.quantity}</span>
                                     </div>
                                     
                                 </div>
+                                {OrderDetails.checkout.discount_applied != 0 && 
+                                <>
+                                    <div className='col-8'>
+                                    <div>
+                                        <span>Discount: </span>
+                                    </div>
+                                    </div>
+                                    <div className='col-4'>
+                                        <div>
+                                            <span>-{OrderDetails.checkout.discount_applied} TK</span>
+                                        </div>
+                                    </div>
+                                </>
+                                }
+                                
                                 <div className='col-8'>
                                     <div>
-                                        <span>Subtotal: </span>
-                                    </div>
-                                </div>
-                                <div className='col-4'>
-                                    <div>
-                                        <span>654 tk</span>
-                                    </div>
-                                </div>
-                                <div className='col-8'>
-                                    <div>
-                                        <span>Delivery</span>
+                                        <span>Delivery Cost</span>
                                     </div>
                                     
                                 </div>
                                 <div className='col-4'>
                                     <div>
-                                        <span>70 tk</span>
+                                        <span>{OrderDetails.product.delivery_cost}</span>
                                     </div>
                                     
                                 </div>
@@ -142,20 +194,20 @@ const OrderDetails = () => {
                                 </div>
                                 <div className='col-4'>
                                     <div>
-                                        <span>Cash on delivery</span>
+                                        <span>{OrderDetails.checkout.payment_status}</span>
                                     </div>
                                     
                                 </div>
                                 <hr />
                                 <div className='col-8'>
                                     <div>
-                                        <span>Total</span>
+                                        <b>Total</b>
                                     </div>
                                     
                                 </div>
                                 <div className='col-4'>
                                     <div>
-                                        <span>3966</span>
+                                        <b>{OrderDetails.checkout.final_price}</b>
                                     </div>
                                     
                                 </div>

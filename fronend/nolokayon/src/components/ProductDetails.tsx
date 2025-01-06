@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import Footer from './footer/Footer';
 import Header from './header/Header';
@@ -14,26 +14,54 @@ const ProductDetails = () => {
 
     const [quantity, setQuantity] = useState<number>(1);
     const [currentImage, setCurrentImage] = useState<any>(null);
-    const [product, setProduct] = useState({})
+    const [product, setProduct] = useState<any>({})
+    const [allProduct, setAllProduct] = useState<any[]>([])
+    const [otherDetails, setOtherDetails] = useState<any>('0')
     const [error, setError] = useState<any>(null)
     const [loading, setLoading] = useState<boolean>(true);
 
     const url = apiUrl + "/product-details/"+productId
+    const productsUrl = apiUrl + "products";
     const fetchDataAsync = async () => {
         let result = await fetchData(url);
 
         if (result.status === 200) {
             if (result.product) setProduct(result.product);
+            console.log(result.product);
         } else {
             setError(result.error);
         }
         setLoading(false);
+    };
+    const fetchProducts = async () => {
+        let result = await fetchData(productsUrl);
+        
+        if (result.status === 200) {
+            let sortedProducts:any[] = result.products;
+            sortedProducts.sort((a, b) => {
+                if (a.category.name === product.category.name && b.category.name !== product.category.name) {
+                  return -1; // `a` comes before `b`
+                }
+                if (a.category.name !== product.category.name && b.category.name === product.category.name) {
+                  return 1; // `b` comes before `a`
+                }
+                return 0; // No change in order
+              });
+            
+            setAllProduct([...sortedProducts])
+        }
     };
 
     useEffect(() => {
         fetchDataAsync();
         setCurrentImage(product.image)
     },[]);
+
+    useEffect(() => {
+        if(product){
+            fetchProducts();
+        }
+    },[product]);
 
     const handleImageClick = (event:any) => {
         const imgSrc = event.target.src;
@@ -128,12 +156,16 @@ const ProductDetails = () => {
                                     </ul>
                                 </div>
                                 <div className="product_variant quantity">
-                                    <NavLink to={`/checkout/${productId}?name=${product.name}&catagory=${product.category.name}&quantity=${quantity}`} className="button">Buy Now</NavLink>
+                                    <NavLink to={`/checkout/${productId}?name=${product.name}&catagory=${product.category.name}&quantity=${quantity}&other=${otherDetails}`} className="button">Buy Now</NavLink>
                                 </div>
                                 <div className=" product_d_action">
                                 <ul>
-                                    <li><a href="product-details.html#" title="Add to wishlist">+ Add to Wishlist</a></li>
-                                    <li><a href="product-details.html#" title="Add to wishlist">+ Compare</a></li>
+                                    <div className='product_meta'>
+                                        {product.other_details ? <span>{product.other_details.name}</span>:null}
+                                        {product.other_details ? product.other_details.details.map((detail:any,idx:number) => (
+                                            <li><input type="radio" name='otherdetails' id={`otherdetails-${idx}`} defaultChecked={idx === 0} onChange={() => setOtherDetails(idx)} /> <label htmlFor={`otherdetails-${idx}`}>{detail}</label></li>
+                                        )):null}
+                                    </div>
                                 </ul>
                                 </div>
                                 <div className="product_meta">
@@ -143,11 +175,8 @@ const ProductDetails = () => {
                             </form>
                             <div className="priduct_social">
                                 <ul>
-                                    <li><a href="product-details.html#" title="facebook"><i className="fa fa-facebook"></i></a></li>           
-                                    <li><a href="product-details.html#" title="twitter"><i className="fa fa-twitter"></i></a></li>           
-                                    <li><a href="product-details.html#" title="pinterest"><i className="fa fa-pinterest"></i></a></li>           
-                                    <li><a href="product-details.html#" title="google +"><i className="fa fa-google-plus"></i></a></li>        
-                                    <li><a href="product-details.html#" title="linkedin"><i className="fa fa-linkedin"></i></a></li>        
+                                    {product.facebook ? <li><a target='_blank' href={product.facebook} title="facebook"><i className="fa fa-facebook"></i></a></li>:null}
+                                    {product.instagram ? <li><a target='_blank' href={product.instagram} title="instagram"><i className="fa fa-instagram"></i></a></li>:null}
                                 </ul>      
                             </div>
 
@@ -195,10 +224,9 @@ const ProductDetails = () => {
                         <div className="product_area ">
                             <div className="product_container bottom">
                                 <div className="custom-row product_row1">
-                                    <SingleProduct/>
-                                    <SingleProduct/>
-                                    <SingleProduct/>
-                                    <SingleProduct/>
+                                    {allProduct.slice(0,8).map((p:any) => (
+                                        <SingleProduct props={{product: p,column:"col-lg-3 col-md-4 col-sm-6"}}/>
+                                    ))}
                                 </div>
                             </div>
                         </div>

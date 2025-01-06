@@ -62,8 +62,8 @@ const Footer = () => {
                                             <p>Email: {mail}</p>
                                         ))}
                                         <ul>
-                                            {footer.facebook ? <li><a href={footer.facebook}><i className="fa fa-facebook"></i></a></li>:null}
-                                            {footer.instagram ? <li><a href={footer.instagram}><i className="fa fa-instagram"></i></a></li>:null}
+                                            {footer.facebook ? <li><a target="_blank" href={footer.facebook}><i className="fa fa-facebook"></i></a></li>:null}
+                                            {footer.instagram ? <li><a target="_blank" href={footer.instagram}><i className="fa fa-instagram"></i></a></li>:null}
                                             
                                         </ul>
 
@@ -90,18 +90,18 @@ const Footer = () => {
                                         {latestProducts.slice(0,2).map((product) => 
                                             <div className="simple_product_items">
                                                 <div className="simple_product_thumb">
-                                                    <a href={product.id}><img src={product.image} alt=""/></a>
+                                                    <NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`}><img src={product.image} alt=""/></NavLink>
                                                 </div>
                                                 <div className="simple_product_content">
                                                     <div className="tag_cate">
-                                                        <a href={product.id}>{product.category.name}</a>
+                                                        <NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`}>{product.category.name}</NavLink>
                                                     </div>
                                                     <div className="product_name">
-                                                        <h3><a href={product.id}>{product.name}</a></h3>
+                                                        <h3><NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`}>{product.name}</NavLink></h3>
                                                     </div>
                                                     <div className="product_price">
                                                         {product.discount_price ? <span className="current_price">{product.discount_price}</span>:null}
-                                                        <span className={product.discount_price ? "old_price":"current_price"}>$70.00</span>
+                                                        <span className={product.discount_price ? "old_price":"current_price"}>{product.price}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -118,18 +118,18 @@ const Footer = () => {
                                     {popularProducts.slice(0,2).map((product) => 
                                             <div className="simple_product_items">
                                                 <div className="simple_product_thumb">
-                                                    <a href={product.id}><img src={product.image} alt=""/></a>
+                                                    <NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`}><img src={product.image} alt=""/></NavLink>
                                                 </div>
                                                 <div className="simple_product_content">
                                                     <div className="tag_cate">
-                                                        <a href={product.id}>{product.category.name}</a>
+                                                        <NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`}>{product.category.name}</NavLink>
                                                     </div>
                                                     <div className="product_name">
-                                                        <h3><a href={product.id}>{product.name}</a></h3>
+                                                        <h3><NavLink to={`/product-details/${product.id}?${product.name} ${product.category.name} ${product.slug}`}>{product.name}</NavLink></h3>
                                                     </div>
                                                     <div className="product_price">
                                                         {product.discount_price ? <span className="current_price">{product.discount_price}</span>:null}
-                                                        <span className={product.discount_price ? "old_price":"current_price"}>$70.00</span>
+                                                        <span className={product.discount_price ? "old_price":"current_price"}>{product.price}</span>
                                                     </div>
                                                 </div>
                                             </div>

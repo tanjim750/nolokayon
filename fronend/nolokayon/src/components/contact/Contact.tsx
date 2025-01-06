@@ -8,7 +8,6 @@ import apiUrl from '../APIURL';
 import fetchData from '../fetchData';
 
 const Contact = () => {
-    const [header, setHeader] = useState<any>(null);
     const [contact, setContact] = useState<any>(null);
     // const [footer, setFooter] = useState<any>(null);
 
@@ -21,7 +20,6 @@ const Contact = () => {
             let result = await fetchData(url);
             
             if (result.status === 200) {
-                if (result.header) setHeader(result.header);
                 if (result.contact) setContact(result.contact);
             } else {
                 setError(result.error);

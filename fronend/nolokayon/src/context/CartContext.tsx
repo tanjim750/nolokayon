@@ -1,32 +1,34 @@
-import React, { createContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { UserInfo } from './UserInfo';
+import fetchData from '../components/fetchData';
+import apiUrl from '../components/APIURL';
 
 export const CartContext = createContext({
     cartItems: [],
-    addToCart: (product:any) => {product},
+    addToCart: () => {},
   });
 
-type ProductType = {
-    id:string | number,
-    name: string,
-    image:string,
-    quantity:number,
-    price:number
-}
+
 export const CartProvider = ({ children }:any) => {
   const [cartItems, setCartItems] = useState<any>([]);
+  const {visitor}:any =  useContext(UserInfo);
 
-  const addToCart = (product: ProductType) => {
-    setCartItems((prevItems: any[]) => {
-      const updatedCart = [...prevItems, product];
-      localStorage.setItem('cartItems', JSON.stringify(updatedCart)); 
-      return updatedCart;
-    });
+  const getCartItems = async () => {
+    console.log('Getting Cart',visitor,visitor.visitor_id);
+    const url = apiUrl +"checkout?visitor_id="+visitor.visitor_id;
+    const result = await fetchData(url);
+    if (result.status == 200){
+      setCartItems(result.items)
+    }
+  };
+
+  const addToCart = () => {
+    getCartItems();
   };
 
   useEffect(() => {
-    const savedItems = localStorage.getItem("cartItems")
-    if (savedItems) setCartItems(JSON.parse(savedItems));
-  },[]);
+    getCartItems();
+  },[visitor]);
 
   return (
     <CartContext.Provider value={{cartItems, addToCart}}>
